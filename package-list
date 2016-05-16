@@ -1,6 +1,5 @@
 io.mangoo.admin
 io.mangoo.annotations
-io.mangoo.authentication
 io.mangoo.cache
 io.mangoo.configuration
 io.mangoo.core
@@ -12,6 +11,7 @@ io.mangoo.filters
 io.mangoo.filters.oauth
 io.mangoo.i18n
 io.mangoo.interfaces
+io.mangoo.mail
 io.mangoo.managers
 io.mangoo.models
 io.mangoo.providers
@@ -27,3 +27,4 @@ io.mangoo.templating.freemarker.methods
 io.mangoo.templating.pebble
 io.mangoo.templating.pebble.tags
 io.mangoo.utils
+io.mangoo.utils.http
