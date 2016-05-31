@@ -4,6 +4,7 @@ io.mangoo.cache
 io.mangoo.configuration
 io.mangoo.core
 io.mangoo.crypto
+io.mangoo.email
 io.mangoo.enums
 io.mangoo.enums.oauth
 io.mangoo.exceptions
@@ -11,7 +12,6 @@ io.mangoo.filters
 io.mangoo.filters.oauth
 io.mangoo.i18n
 io.mangoo.interfaces
-io.mangoo.mail
 io.mangoo.managers
 io.mangoo.models
 io.mangoo.providers
