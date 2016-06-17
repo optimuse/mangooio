@@ -27,4 +27,3 @@ io.mangoo.templating.freemarker.methods
 io.mangoo.templating.pebble
 io.mangoo.templating.pebble.tags
 io.mangoo.utils
-io.mangoo.utils.http
