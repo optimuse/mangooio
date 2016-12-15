@@ -3,6 +3,7 @@ io.mangoo.annotations
 io.mangoo.cache
 io.mangoo.configuration
 io.mangoo.core
+io.mangoo.core.yaml
 io.mangoo.crypto
 io.mangoo.email
 io.mangoo.enums
@@ -24,6 +25,5 @@ io.mangoo.templating
 io.mangoo.templating.freemarker
 io.mangoo.templating.freemarker.directives
 io.mangoo.templating.freemarker.methods
-io.mangoo.templating.pebble
-io.mangoo.templating.pebble.tags
 io.mangoo.utils
+io.mangoo.utils.cookie
