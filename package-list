@@ -11,6 +11,8 @@ io.mangoo.enums.oauth
 io.mangoo.exceptions
 io.mangoo.filters
 io.mangoo.filters.oauth
+io.mangoo.helpers
+io.mangoo.helpers.cookie
 io.mangoo.i18n
 io.mangoo.interfaces
 io.mangoo.managers
@@ -26,4 +28,3 @@ io.mangoo.templating.freemarker
 io.mangoo.templating.freemarker.directives
 io.mangoo.templating.freemarker.methods
 io.mangoo.utils
-io.mangoo.utils.cookie
