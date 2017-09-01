@@ -5,6 +5,7 @@ io.mangoo.configuration
 io.mangoo.core
 io.mangoo.core.yaml
 io.mangoo.crypto
+io.mangoo.crypto.totp
 io.mangoo.email
 io.mangoo.enums
 io.mangoo.enums.oauth
@@ -23,8 +24,8 @@ io.mangoo.routing.bindings
 io.mangoo.routing.handlers
 io.mangoo.routing.listeners
 io.mangoo.scheduler
+io.mangoo.services
 io.mangoo.templating
-io.mangoo.templating.freemarker
-io.mangoo.templating.freemarker.directives
-io.mangoo.templating.freemarker.methods
+io.mangoo.templating.directives
+io.mangoo.templating.methods
 io.mangoo.utils
