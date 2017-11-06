@@ -9,8 +9,6 @@ import com.google.inject.Injector;
 import io.mangoo.configuration.ConfigFactory;
 import io.mangoo.enums.Mode;
 import io.mangoo.enums.Required;
-import io.mangoo.interfaces.MangooTemplateEngine;
-import io.mangoo.templating.TemplateEngineFreemarker;
 import io.mangoo.utils.BootstrapUtils;
 import io.undertow.Undertow;
 
@@ -22,7 +20,6 @@ import io.undertow.Undertow;
  */
 public final class Application {
     private static volatile Undertow undertow;
-    private static volatile MangooTemplateEngine templateEngine;
     private static volatile Mode mode;
     private static volatile Injector injector;
     private static volatile LocalDateTime start;
@@ -116,19 +113,6 @@ public final class Application {
      */
     public static LocalDateTime getStart() {
         return start;
-    }
-
-    /**
-     * @deprecated As of 4.8.0 without replacedment, will be removed in 5.0.0
-     * @return An instance of the internal template engine freemarker
-     */
-    @Deprecated
-    public static MangooTemplateEngine getInternalTemplateEngine() {
-        if (templateEngine == null) {
-            templateEngine = new TemplateEngineFreemarker();
-        }
-
-        return templateEngine;
     }
 
     /**

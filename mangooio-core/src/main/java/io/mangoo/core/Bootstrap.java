@@ -133,19 +133,19 @@ public class Bootstrap {
     public void sanityChecks() {
         if (Mode.PROD == mode) {
             if (!config.isAuthenticationCookieSecure()) {
-                LOG.warn("Authentication cookie has secure flag set to false. It is highly recommended to set auth.cookie.secure to true.");
+                LOG.warn("Authentication cookie has secure flag set to false. It is highly recommended to set authentication.cookie.secure to true.");
             }
             
             if (config.getAuthenticationCookieName().equals(Default.AUTHENTICATION_COOKIE_NAME.toString())) {
-                LOG.warn("Authentication cookie name has default value. Consider changeing auth.cookie.name to an application specific value.");
+                LOG.warn("Authentication cookie name has default value. Consider changeing authentication.cookie.name to an application specific value.");
             }
             
             if (!config.isSessionCookieSecure()) {
-                LOG.warn("Session cookie has secure flag set to false. It is highly recommended to set cookie.secure to true.");
+                LOG.warn("Session cookie has secure flag set to false. It is highly recommended to set session.cookie.secure to true.");
             }
             
             if (config.getSessionCookieName().equals(Default.SESSION_COOKIE_NAME.toString())) {
-                LOG.warn("Session cookie name has default value. Consider changeing cookie.name to an application specific value.");
+                LOG.warn("Session cookie name has default value. Consider changeing session.cookie.name to an application specific value.");
             }
         }
     }

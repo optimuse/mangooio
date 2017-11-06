@@ -184,18 +184,6 @@ public class Mail {
     }
     
     /**
-     * Mark the mail as an HTML mail
-     * 
-     * @deprecated As of version 4.4.0, will be private in 5.0.0., use {@link #newHtmlMail()} instead.
-     * @return A mail object instance
-     */
-    @Deprecated
-    public Mail isHtml() {
-        this.html = true;
-        return this;
-    }
-    
-    /**
      * Adds content to the template which will be rendered
      * 
      * @param key The key 

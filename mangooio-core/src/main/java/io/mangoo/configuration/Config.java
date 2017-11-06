@@ -501,28 +501,10 @@ public class Config {
     }
 
     /**
-     * @deprecated As of 4.8.0, replace by getAuthenticationCookieVersion
-     * @return auth.cookie.version from application.yaml or default value if undefined
-     */
-    @Deprecated
-    public String getAuthCookieVersion() {
-        return getString(Key.AUTHENTICATION_COOKIE_VERSION, Default.AUTHENTICATION_COOKIE_VERSION.toString());
-    }
-    
-    /**
      * @return auth.cookie.version from application.yaml or default value if undefined
      */
     public String getAuthenticationCookieVersion() {
         return getString(Key.AUTHENTICATION_COOKIE_VERSION, Default.AUTHENTICATION_COOKIE_VERSION.toString());
-    }
-
-    /**
-     * @deprecated As of 4.8.0, replace by getSessionCookieVersion
-     * @return cookie.version from application.yaml or default value if undefined
-     */
-    @Deprecated
-    public String getCookieVersion() {
-        return getString(Key.SESSION_COOKIE_VERSION, Default.SESSION_COOKIE_VERSION.toString());
     }
     
     /**

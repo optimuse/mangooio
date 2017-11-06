@@ -56,7 +56,6 @@ import io.mangoo.utils.MinificationUtils;
  * @author svenkubiak
  *
  */
-@SuppressWarnings({"restriction", "unchecked"})
 public class Watcher implements Runnable {
     private static final Logger LOG = LogManager.getLogger(Watcher.class);
     private final Trigger trigger;
