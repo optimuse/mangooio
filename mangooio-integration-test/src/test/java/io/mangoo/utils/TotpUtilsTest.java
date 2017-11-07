@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.startsWith;
 import org.junit.Test;
 
 import io.mangoo.enums.HmacShaAlgorithm;
-import io.mangoo.test.utils.ConcurrentTester;
+import io.mangoo.test.ConcurrentTestRunner;
 
 /**
  * 
@@ -42,7 +42,7 @@ public class TotpUtilsTest {
             assertThat(secret.length(), equalTo(SECRET_LENGTH));  
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
             .withRunnable(runnable)
             .withThreads(THREADS)
             .run();
@@ -75,7 +75,7 @@ public class TotpUtilsTest {
             assertThat(totp.length(), equalTo(PASSWORD_LENGTH));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
             .withRunnable(runnable)
             .withThreads(THREADS)
             .run();
@@ -102,7 +102,7 @@ public class TotpUtilsTest {
             assertThat(true, equalTo(TotpUtils.verifiedTotp(secret, totp, HmacShaAlgorithm.HMAC_SHA_512)));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
             .withRunnable(runnable)
             .withThreads(THREADS)
             .run();
@@ -142,7 +142,7 @@ public class TotpUtilsTest {
 	        assertThat(qr, equalTo("otpauth://totp/test?secret=MZXW6&algorithm=HmacSHA512&issuer=issuer"));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
             .withRunnable(runnable)
             .withThreads(THREADS)
             .run();

@@ -11,9 +11,9 @@ import org.junit.Test;
 
 import com.google.common.net.MediaType;
 
-import io.mangoo.test.utils.ConcurrentTester;
-import io.mangoo.test.utils.WebRequest;
-import io.mangoo.test.utils.WebResponse;
+import io.mangoo.test.ConcurrentTestRunner;
+import io.mangoo.test.http.WebRequest;
+import io.mangoo.test.http.WebResponse;
 import io.undertow.util.StatusCodes;
 
 /**
@@ -42,7 +42,7 @@ public class ConcurrentControllerTest {
             assertThat(response.getContent(), equalTo(uuid + ";Parker;24"));    
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
             .withRunnable(runnable)
             .withThreads(50)
             .run();

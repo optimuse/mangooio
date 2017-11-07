@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import com.google.common.net.MediaType;
 
-import io.mangoo.test.utils.WebRequest;
-import io.mangoo.test.utils.WebResponse;
+import io.mangoo.test.http.WebRequest;
+import io.mangoo.test.http.WebResponse;
 import io.undertow.util.StatusCodes;
 
 /**

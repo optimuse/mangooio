@@ -8,9 +8,9 @@ import static org.hamcrest.Matchers.nullValue;
 import org.junit.Test;
 
 import io.mangoo.enums.Default;
-import io.mangoo.test.utils.WebBrowser;
-import io.mangoo.test.utils.WebRequest;
-import io.mangoo.test.utils.WebResponse;
+import io.mangoo.test.http.WebBrowser;
+import io.mangoo.test.http.WebRequest;
+import io.mangoo.test.http.WebResponse;
 import io.undertow.util.Methods;
 import io.undertow.util.StatusCodes;
 

@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.jayway.jsonpath.ReadContext;
 
 import io.mangoo.models.Car;
-import io.mangoo.test.utils.ConcurrentTester;
+import io.mangoo.test.ConcurrentTestRunner;
 
 /**
  * 
@@ -50,7 +50,7 @@ public class JsonUtilsTest {
             assertThat(json, equalTo("{\"brand\":null,\"doors\":0,\"foo\":\"blablabla\",\"id\":\"" + uuid + "\"}"));   
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
             .withRunnable(runnable)
             .withThreads(50)
             .run();
@@ -84,7 +84,7 @@ public class JsonUtilsTest {
             assertThat(readContext.read("$.foo"), equalTo(uuid));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
         .withRunnable(runnable)
         .withThreads(50)
         .run();
@@ -122,7 +122,7 @@ public class JsonUtilsTest {
             assertThat(car.foo, equalTo(uuid));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
         .withRunnable(runnable)
         .withThreads(50)
         .run();

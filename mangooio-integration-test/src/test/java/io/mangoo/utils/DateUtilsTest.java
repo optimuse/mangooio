@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 import org.junit.Test;
 
-import io.mangoo.test.utils.ConcurrentTester;
+import io.mangoo.test.ConcurrentTestRunner;
 
 /**
  * 
@@ -38,7 +38,7 @@ public class DateUtilsTest {
             assertThat(DateUtils.localDateTimeToDate(localDateTime), not(equalTo(nullValue())));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
         .withRunnable(runnable)
         .withThreads(50)
         .run();
@@ -63,7 +63,7 @@ public class DateUtilsTest {
             assertThat(DateUtils.localDateToDate(localDate), not(equalTo(nullValue())));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
         .withRunnable(runnable)
         .withThreads(50)
         .run();

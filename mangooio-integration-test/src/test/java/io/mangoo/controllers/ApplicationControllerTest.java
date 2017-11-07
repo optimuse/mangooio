@@ -24,8 +24,8 @@ import io.mangoo.configuration.Config;
 import io.mangoo.core.Application;
 import io.mangoo.enums.Default;
 import io.mangoo.enums.Header;
-import io.mangoo.test.utils.WebRequest;
-import io.mangoo.test.utils.WebResponse;
+import io.mangoo.test.http.WebRequest;
+import io.mangoo.test.http.WebResponse;
 import io.undertow.util.Headers;
 import io.undertow.util.StatusCodes;
 

@@ -1,4 +1,4 @@
-package io.mangoo.test.utils;
+package io.mangoo.test;
     
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +8,14 @@ import java.util.List;
  * @author svenkubiak
  *
  */
-public class ConcurrentTester {
+public class ConcurrentTestRunner {
     private Runnable runnable;
     private int threads = 10; //NOSONAR
     private volatile Error error;
     private volatile RuntimeException runtimeException;
     
-    public static ConcurrentTester create() {
-        return new ConcurrentTester();
+    public static ConcurrentTestRunner create() {
+        return new ConcurrentTestRunner();
     }
 
     /**
@@ -24,7 +24,7 @@ public class ConcurrentTester {
      * @param runnable The runnable to execute
      * @return ThreadRunner instance
      */
-    public ConcurrentTester withRunnable(Runnable runnable) {
+    public ConcurrentTestRunner withRunnable(Runnable runnable) {
         this.runnable = runnable;
         return this;
     }
@@ -35,7 +35,7 @@ public class ConcurrentTester {
      * @param threads The number of threads
      * @return ThreadRunner instance
      */
-    public ConcurrentTester withThreads(int threads) {
+    public ConcurrentTestRunner withThreads(int threads) {
         this.threads = threads;
         return this;
     }

@@ -10,7 +10,7 @@ import io.mangoo.configuration.Config;
 import io.mangoo.core.Application;
 import io.mangoo.crypto.Crypto;
 import io.mangoo.helpers.cookie.CookieParser;
-import io.mangoo.test.utils.ConcurrentTester;
+import io.mangoo.test.ConcurrentTestRunner;
 
 /**
  *
@@ -56,7 +56,7 @@ public class CookieParserTest {
             assertThat(cookieParser.hasValidSessionCookie(), equalTo(true));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
         .withRunnable(runnable)
         .withThreads(50)
         .run();
@@ -87,7 +87,7 @@ public class CookieParserTest {
             assertThat(cookieParser.hasValidSessionCookie(), equalTo(true));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
         .withRunnable(runnable)
         .withThreads(50)
         .run();

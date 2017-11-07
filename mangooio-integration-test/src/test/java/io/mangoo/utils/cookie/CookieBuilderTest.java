@@ -13,7 +13,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import io.mangoo.helpers.cookie.CookieBuilder;
-import io.mangoo.test.utils.ConcurrentTester;
+import io.mangoo.test.ConcurrentTestRunner;
 import io.undertow.server.handlers.Cookie;
 
 /**
@@ -87,7 +87,7 @@ public class CookieBuilderTest {
             assertThat(cookie.isHttpOnly(), equalTo(true));
         };
         
-        ConcurrentTester.create()
+        ConcurrentTestRunner.create()
         .withRunnable(runnable)
         .withThreads(50)
         .run();
