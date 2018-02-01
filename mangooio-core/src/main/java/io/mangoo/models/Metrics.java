@@ -3,24 +3,29 @@ package io.mangoo.models;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.atomic.LongAdder;
 
 import com.google.inject.Singleton;
 
 /**
- * Base class for counting system metrics
+ * Base class for system metrics
  *
  * @author svenkubiak
  *
  */
 @Singleton
 public class Metrics {
-    private final AtomicIntegerFieldUpdater<Metrics> maxRequestTimeUpdater = AtomicIntegerFieldUpdater.newUpdater(Metrics.class, "maxRequestTime");
-    private final AtomicIntegerFieldUpdater<Metrics> minRequestTimeUpdater = AtomicIntegerFieldUpdater.newUpdater(Metrics.class, "minRequestTime");
-    private final AtomicLongFieldUpdater<Metrics> totalRequestTimeUpdater = AtomicLongFieldUpdater.newUpdater(Metrics.class, "totalRequestTime");
-    private final AtomicLongFieldUpdater<Metrics> totalRequestsUpdater = AtomicLongFieldUpdater.newUpdater(Metrics.class, "totalRequests");
-    private final Map<Integer, LongAdder> metricsCount = new ConcurrentHashMap<>(16, 0.9F, 1);
+    private static final int CONCURRENCY_LEVEL = 1;
+    private static final float LOAD_FACTOR = 0.9F;
+    private static final int INITIAL_CAPACITY = 16;
+    private AtomicIntegerFieldUpdater<Metrics> maxRequestTimeUpdater = AtomicIntegerFieldUpdater.newUpdater(Metrics.class, "maxRequestTime");
+    private AtomicIntegerFieldUpdater<Metrics> minRequestTimeUpdater = AtomicIntegerFieldUpdater.newUpdater(Metrics.class, "minRequestTime");
+    private AtomicLongFieldUpdater<Metrics> totalRequestTimeUpdater = AtomicLongFieldUpdater.newUpdater(Metrics.class, "totalRequestTime");
+    private AtomicLongFieldUpdater<Metrics> totalRequestsUpdater = AtomicLongFieldUpdater.newUpdater(Metrics.class, "totalRequests");
+    private Map<Integer, LongAdder> responseCount = new ConcurrentHashMap<>(INITIAL_CAPACITY, LOAD_FACTOR, CONCURRENCY_LEVEL);
+    private volatile AtomicLong dataSend = new AtomicLong();
     private volatile long avgRequestTime;
     private volatile long totalRequestTime;
     private volatile long totalRequests;
@@ -38,8 +43,8 @@ public class Metrics {
         this.totalRequests = copy.totalRequests;
     }
     
-    public void inc(int responseCode) {
-        this.metricsCount.computeIfAbsent(responseCode, (Integer integer) -> new LongAdder()).increment();
+    public void addStatusCode(int responseCode) {
+        this.responseCount.computeIfAbsent(responseCode, (Integer integer) -> new LongAdder()).increment();
     }
     
     public void update(final int requestTime) {
@@ -65,8 +70,8 @@ public class Metrics {
         this.avgRequestTime = this.totalRequestTime / this.totalRequests;
     }
 
-    public Map<Integer, LongAdder> getMetrics() {
-        return this.metricsCount;
+    public Map<Integer, LongAdder> getResponseMetrics() {
+        return this.responseCount;
     }
 
     public int getMaxRequestTime() {
@@ -79,5 +84,27 @@ public class Metrics {
     
     public long getAvgRequestTime() {
         return avgRequestTime;
+    }
+
+    public void incrementDataSend(long length) {
+        this.dataSend.addAndGet(length);
+    }
+    
+    public long getDataSend() {
+        return this.dataSend.longValue();
+    }
+
+    public void reset() {
+        this.maxRequestTimeUpdater = AtomicIntegerFieldUpdater.newUpdater(Metrics.class, "maxRequestTime");
+        this.minRequestTimeUpdater = AtomicIntegerFieldUpdater.newUpdater(Metrics.class, "minRequestTime");
+        this.totalRequestTimeUpdater = AtomicLongFieldUpdater.newUpdater(Metrics.class, "totalRequestTime");
+        this.totalRequestsUpdater = AtomicLongFieldUpdater.newUpdater(Metrics.class, "totalRequests");
+        this.responseCount = new ConcurrentHashMap<>(INITIAL_CAPACITY, LOAD_FACTOR, CONCURRENCY_LEVEL);
+        this.dataSend = new AtomicLong();
+        this.avgRequestTime = 0;
+        this.totalRequestTime = 0;
+        this.totalRequests = 0;
+        this.maxRequestTime = 0;
+        this.minRequestTime = 0;
     }
 }

@@ -80,7 +80,7 @@ public class Response {
     }
 
     public List<Cookie> getCookies() {
-        return this.cookies;
+        return new ArrayList<>(this.cookies);
     }
 
     public byte[] getBinaryContent() {

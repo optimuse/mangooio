@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.mangoo.configuration.Config;
 import io.mangoo.core.Application;
 import io.mangoo.crypto.Crypto;
 import io.mangoo.enums.ClaimKey;
@@ -29,7 +30,6 @@ import io.mangoo.routing.handlers.DispatcherHandler;
 public class CookieParser {
     private static final Logger LOG = LogManager.getLogger(DispatcherHandler.class);
     private Map<String, String> sessionValues = new HashMap<>();
-    private String secret;
     private String value;
     private String authenticityToken;
     private String authenticatedUser;
@@ -46,13 +46,6 @@ public class CookieParser {
         return this;
     }
     
-    public CookieParser withSecret(String secret) {
-        Objects.requireNonNull(secret, Required.APPLICATION_SECRET.toString());
-        
-        this.secret = secret;
-        return this;
-    }
-    
     public CookieParser isEncrypted(boolean encrypted) {
         this.encrypted = encrypted;
         return this;
@@ -64,13 +57,15 @@ public class CookieParser {
     
     @SuppressWarnings("unchecked")
     public boolean hasValidSessionCookie() {
-        decrypt();
+        if (this.encrypted && StringUtils.isNotBlank(this.value) && !this.value.contains("\\|")) {
+            this.value = Application.getInstance(Crypto.class).decrypt(this.value, Application.getInstance(Config.class).getSessionCookieEncryptionKey());
+        }
 
         boolean valid = false;
         if (StringUtils.isNotBlank(this.value)) {
             try {
                 Jws<Claims> jwsClaims = Jwts.parser()
-                        .setSigningKey(this.secret)
+                        .setSigningKey(Application.getInstance(Config.class).getSessionCookieSignKey())
                         .parseClaimsJws(this.value);
                     
                 Claims claims = jwsClaims.getBody();
@@ -90,13 +85,15 @@ public class CookieParser {
     }
 
     public boolean hasValidAuthenticationCookie() {
-        decrypt();
+        if (this.encrypted && StringUtils.isNotBlank(this.value) && !this.value.contains("\\|")) {
+            this.value = Application.getInstance(Crypto.class).decrypt(this.value, Application.getInstance(Config.class).getAuthenticationCookieEncryptionKey());
+        }
 
         boolean valid = false;
         if (StringUtils.isNotBlank(this.value)) {
             try {
                 Jws<Claims> jwsClaims = Jwts.parser()
-                        .setSigningKey(this.secret)
+                        .setSigningKey(Application.getInstance(Config.class).getAuthenticationCookieSignKey())
                         .parseClaimsJws(this.value);
                     
                 Claims claims = jwsClaims.getBody();
@@ -129,12 +126,6 @@ public class CookieParser {
 
     public String getAuthenticatedUser() {
         return this.authenticatedUser;
-    }
-
-    private void decrypt() {
-        if (this.encrypted && StringUtils.isNotBlank(this.value) && !this.value.contains("\\|")) {
-            this.value = Application.getInstance(Crypto.class).decrypt(this.value);
-        }
     }
     
     private LocalDateTime dateToLocalDateTime(Date date) {

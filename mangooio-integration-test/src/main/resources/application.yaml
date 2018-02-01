@@ -14,7 +14,7 @@ default:
         secret     : myvoiceismypasswordmyvoiceismypassword
         language   : en
         jwt        :
-            signkey       : myvoiceismypassword
+            signkey       : myvoiceismypasswordmyvoiceismypassword
             encrypt       : true
             encryptionkey : myvoiceismypasswordmyvoiceismypa
         timer      : true
@@ -31,9 +31,12 @@ default:
         ajp:
             host      : localhost
             port      : 9899
-    cookie:
-       encrypt : true
-    auth:
+    session:
+       cookie:
+          encrypt: true
+    metrics:
+       enable: true
+    authentication:
         redirect  : /login
         cookie:
             name    : TEST-AUTH
@@ -67,6 +70,8 @@ test:
     application:
         masterkeyfile    : ./key/masterkey.txt
         foo              : cryptex[MloJcu6/zaaNs7gfpfZATg==]
+        bar              : cryptex[NtUQaVGVUAVoTsl2c1HMDw==, 2]  
+        foobar           : cryptex[WqfTFTyaEW2umq5d47Twow==, 3]               
         admin:
               enable     : true
               username   : cryptex[MloJcu6/zaaNs7gfpfZATg==]

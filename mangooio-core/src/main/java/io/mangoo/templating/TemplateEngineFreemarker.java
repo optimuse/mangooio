@@ -43,6 +43,7 @@ import io.mangoo.templating.methods.I18nMethod;
 import io.mangoo.templating.methods.LocationMethod;
 import io.mangoo.templating.methods.PrettyTimeMethod;
 import io.mangoo.templating.methods.RouteMethod;
+import io.mangoo.utils.BootstrapUtils;
 import io.undertow.server.HttpServerExchange;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 
@@ -57,7 +58,7 @@ public class TemplateEngineFreemarker implements MangooTemplateEngine {
     private static final int MAX_CHARS = 65_536;
     private static final int ONE_SECOND_MS = 1000;
     private static final int STRONG_SIZE_LIMIT = 20;
-    private static final Version VERSION = new Version(2, 3, 25);
+    private static final Version VERSION = new Version(2, 3, 27);
     private static final List<String> blacklist = Arrays.asList(
             "form", "flash", "session", "subject", "i18n", "route", "location", "prettytime", "authenticity", "authenticityForm"
             );
@@ -87,7 +88,7 @@ public class TemplateEngineFreemarker implements MangooTemplateEngine {
         try {
             template = configuration.getTemplate(templatePath);
         } catch (IOException e) {
-            throw new MangooTemplateEngineException("Template was not found on path:" + templatePath, e);
+            throw new MangooTemplateEngineException("Template not found on path: " + templatePath, e);
         }
         
         if (!Application.inProdMode()) { 
@@ -150,7 +151,7 @@ public class TemplateEngineFreemarker implements MangooTemplateEngine {
             content.put("line", stackTraceElement.getLineNumber());
             content.put("causeSource", cause.toString());
             content.put("stackTraces", cause.getStackTrace());
-            content.put("sourceCodePath", StringUtils.substringAfter(new File(Application.getBaseDirectory()).toPath().resolve(sourceCodePath).toFile().getPath(), "src/main/java") + " around line " + stackTraceElement.getLineNumber());
+            content.put("sourceCodePath", StringUtils.substringAfter(new File(BootstrapUtils.getBaseDirectory()).toPath().resolve(sourceCodePath).toFile().getPath(), "src/main/java") + " around line " + stackTraceElement.getLineNumber());
         }
 
         Configuration config = new Configuration(VERSION);
@@ -224,7 +225,7 @@ public class TemplateEngineFreemarker implements MangooTemplateEngine {
     private List<Source> getSources(int errorLine, String sourcePath) throws FileNotFoundException, IOException {
         Objects.requireNonNull(sourcePath, Required.SOURCE_PATH.toString());
 
-        StringBuilder buffer = new StringBuilder();
+        StringBuffer buffer = new StringBuffer();
         buffer.append(System.getProperty("user.dir"))
         .append(File.separator)
         .append("src")

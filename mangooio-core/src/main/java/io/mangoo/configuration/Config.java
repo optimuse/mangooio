@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -130,25 +132,27 @@ public class Config {
      * Decrypts all encrypted config value
      */
     private void decrypt() {
-        String key = null;
         Crypto crypto = new Crypto(this);
 
         for (final Entry<String, String> entry : this.values.entrySet()) {
             if (isEncrypted(entry.getValue())) {
-                if (StringUtils.isBlank(key)) {
-                    key = getMasterKey();
+                List<String> keys = getMasterKeys();
+                
+                String value = StringUtils.substringBetween(entry.getValue(), "cryptex[", "]");
+                String [] cryptex = value.split(",");
+                
+                String decryptedValue = null;
+                if (cryptex.length == 1) {
+                    decryptedValue = crypto.decrypt(cryptex[0].trim(), keys.get(0));
+                } else if (cryptex.length == 2) { //NOSONAR
+                    decryptedValue = crypto.decrypt(cryptex[0].trim(), keys.get(Integer.parseInt(cryptex[1].trim()) - 1));
                 }
-
-                if (StringUtils.isNotBlank(key)) {
-                    final String decryptedText = crypto.decrypt(StringUtils.substringBetween(entry.getValue(), "cryptex[", "]"), key);
-                    if (StringUtils.isNotBlank(decryptedText)) {
-                        this.values.put(entry.getKey(), decryptedText);
-                    } else {
-                        decrypted = false;
-                    }
+                
+                if (StringUtils.isNotBlank(decryptedValue)) {
+                    this.values.put(entry.getKey(), decryptedValue);
                 } else {
-                    LOG.error("Found encrypted config value '" + entry.getKey() + "' but no masterkey was set.");
-                    decrypted = false;
+                    LOG.error("Failed to decrypt a config value");
+                    this.decrypted = false;
                 }
             }
         }
@@ -158,28 +162,32 @@ public class Config {
      * @return True if decryption of config values was successful, false otherwise
      */
     public boolean isDecrypted() {
-        return decrypted;
+        return this.decrypted;
     }
 
     /**
-     * @return The master key for encrypted config value, returns a default value if in test mode
+     * @return The master key(s) for encrypted config value
      */
-    public String getMasterKey() {
+    public List<String> getMasterKeys() {
         String masterkey = System.getProperty(Jvm.APPLICATION_MASTERKEY.toString());
-        if (StringUtils.isBlank(masterkey)) {
+        List<String> keys = new ArrayList<>();
+        
+        if (StringUtils.isNotBlank(masterkey)) {
+            keys.add(masterkey);
+        } else {
             String masterkeyFile = this.values.get(Key.APPLICATION_MASTERKEY_FILE.toString());
             if (StringUtils.isNotBlank(masterkeyFile)) {
                 try {
-                    masterkey = FileUtils.readFileToString(new File(masterkeyFile), Default.ENCODING.toString()); //NOSONAR
-                } catch (final IOException e) {
-                    LOG.error("Failed to read master key", e);
+                    keys = FileUtils.readLines(new File(masterkeyFile), Default.ENCODING.toString()); //NOSONAR
+                } catch (IOException e) {
+                    LOG.error("Failed to load masterkey file. Please make sure to set a masterkey file if using encrypted config values", e);
                 }
             } else {
                 LOG.error("Failed to load masterkey file. Please make sure to set a masterkey file if using encrypted config values");
-            }
+            }  
         }
 
-        return masterkey;
+        return keys;
     }
 
     /**
@@ -396,17 +404,6 @@ public class Config {
      */
     public Map<String, String> getAllConfigurations() {
         return new ConcurrentHashMap(this.values);
-    }
-
-    /**
-     * Checks if the application.conf stored in conf/application.conf contains an application
-     * secret property (application.secret) that has at least 32 characters (256-Bit)
-     *
-     * @return True if the configuration contains an application.secret property with at least 32 characters
-     */
-    public boolean hasValidSecret() {
-        final String secret = getApplicationSecret();
-        return StringUtils.isNotBlank(secret) && secret.length() >= Default.APPLICATION_SECRET_MIN_LENGTH.toInt();
     }
 
     /**
@@ -709,27 +706,6 @@ public class Config {
         
         return getInt(Key.CONNECTOR_AJP_PORT, 0);
     }
-    
-    /**
-     * @return application.jwt.signkey or application secret if undefined
-     */
-    public String getJwtsSignKey() {
-        return getString(Key.APPLICATION_JWT_SIGNKEY, getApplicationSecret());
-    }
-
-    /**
-     * @return application.jwt.encrypt or default value if undefined
-     */
-    public boolean isJwtsEncrypted() {
-        return getBoolean(Key.APPLICATION_JWT_ENCRYPT, Default.APPLICATION_JWT_ENCRYPT.toBoolean());
-    }
-
-    /**
-     * @return application.jwt.encryptionkey or application secret if undefined
-     */
-    public String getJwtsEncryptionKey() {
-        return getString(Key.APPLICATION_JWT_ENCRYPTION_KEY, getApplicationSecret());
-    }
 
     /**
      * 
@@ -768,10 +744,17 @@ public class Config {
     }
 
     /**
-     * @return cache.cluster.enabled or default value if undefined
+     * @return cache.cluster.enable or default value if undefined
      */
     public boolean isClusteredCached() {
         return getBoolean(Key.CACHE_CLUSTER_ENABLE, Default.CACHE_CLUSTER_ENABLE.toBoolean());
+    }
+    
+    /**
+     * @return metrics.enable or default value if undefined
+     */
+    public boolean isMetricsEnabled() {
+        return getBoolean(Key.METRICS_ENABLE, Default.METRICS_ENABLE.toBoolean());
     }
 
     /**
@@ -793,5 +776,40 @@ public class Config {
      */
     public String getRefererPolicy() {
         return getString(Key.APPLICATION_HEADERS_REFERERPOLICY, Default.APPLICATION_HEADERS_REFERERPOLICY.toString());
+    }
+
+    /**
+     * @return undertow.maxentitysize or default value if undefined
+     */
+    public long getUndertowMaxEntitySize() {
+        return getLong(Key.UNDERTOW_MAX_ENTITY_SIZE, Default.UNDERTOW_MAX_ENTITY_SIZE.toLong());
+    }
+
+    /**
+     * @return session.cookie.signkey or application secret if undefined
+     */
+    public String getSessionCookieSignKey() {
+        return getString(Key.SESSION_COOKIE_SIGNKEY, getApplicationSecret());
+    }
+
+    /**
+     * @return session.cookie.encryptionkey or application secret if undefined
+     */
+    public String getSessionCookieEncryptionKey() {
+        return getString(Key.SESSION_COOKIE_ENCRYPTIONKEY, getApplicationSecret());
+    }
+
+    /**
+     * @return auth.cookie.signkey or application secret if undefined
+     */
+    public String getAuthenticationCookieSignKey() {
+        return getString(Key.AUTHENTICATION_COOKIE_SIGNKEY, getApplicationSecret());
+    }
+
+    /**
+     * @return auth.cookie.encryptionkey or application secret if undefined
+     */
+    public String getAuthenticationCookieEncryptionKey() {
+        return getString(Key.AUTHENTICATION_COOKIE_SIGNKEY, getApplicationSecret());
     }
 }

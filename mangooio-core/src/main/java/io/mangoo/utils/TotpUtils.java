@@ -42,17 +42,17 @@ public class TotpUtils {
      * @return A 64 characters random string based on SecureRandom
      */
     public static Optional<String> createSecret() {
-        StringBuilder stringBuilder = new StringBuilder(BYTES_SECRET);
+        StringBuilder buffer = new StringBuilder(BYTES_SECRET);
         for (int i = 0; i < BYTES_SECRET; i++) {
             int value = random.nextInt(MAX_CHARACTERS);
             if (value < ITERATIONS) {
-                stringBuilder.append((char) ('A' + value));
+                buffer.append((char) ('A' + value));
             } else {
-                stringBuilder.append((char) ('2' + (value - ITERATIONS)));
+                buffer.append((char) ('2' + (value - ITERATIONS)));
             }
         }
         
-        return Optional.of(stringBuilder.toString());
+        return Optional.of(buffer.toString());
     }
     
     /**

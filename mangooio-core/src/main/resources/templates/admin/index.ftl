@@ -3,6 +3,19 @@
 	<h1>Dashboard</h1>
 </section>
 <section class="content">
+<#if warnings?has_content>
+<div class="row">
+    <div class="col-lg-12">
+		<div class="alert alert-warning alert-dismissible">
+        		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+             <h4><i class="icon fa fa-warning"></i> Warning!</h4>
+             <#list warnings as warning>
+    				${warning}<br>
+			</#list>
+        </div>
+    </div>
+</div>
+</#if>
 <div class="row">
     <div class="col-lg-12">
     	<div class="info-box">
@@ -17,42 +30,22 @@
 <div class="row">
     <div class="col-lg-6">
     	<div class="info-box">
-        	<span class="info-box-icon bg-aqua"><i class="fa fa-battery-1"></i></span>
-            <div class="info-box-content">
-            	<span class="info-box-text">Allocated memory</span>
-            	<span class="info-box-number">${allocatedMemory}</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6">
-    	<div class="info-box">
-        	<span class="info-box-icon bg-aqua"><i class="fa fa-battery-2"></i></span>
+        	<span class="info-box-icon bg-aqua"><i class="fa fa-line-chart"></i></span>
             <div class="info-box-content">
             	<span class="info-box-text">Free memory</span>
             	<span class="info-box-number">${freeMemory}</span>
             </div>
         </div>
     </div>
-</div>
-<div class="row">
     <div class="col-lg-6">
     	<div class="info-box">
-        	<span class="info-box-icon bg-aqua"><i class="fa fa-battery-three-quarters"></i></span>
+        	<span class="info-box-icon bg-aqua"><i class="fa fa-battery-4"></i></span>
             <div class="info-box-content">
-            	<span class="info-box-text">Max memory</span>
-            	<span class="info-box-number">${maxMemory}</span>
+            	<span class="info-box-text">Allocated memory</span>
+            	<span class="info-box-number">${allocatedMemory}</span>
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
-    	<div class="info-box">
-        	<span class="info-box-icon bg-aqua"><i class="fa fa-battery-full"></i></span>
-            <div class="info-box-content">
-            	<span class="info-box-text">Total free memory</span>
-            	<span class="info-box-number">${totalFreeMemory}</span>
-            </div>
-        </div>
-    </div>    
 </div>
 </section>
 <#include "footer.ftl">

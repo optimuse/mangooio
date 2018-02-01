@@ -3,21 +3,18 @@ package io.mangoo.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.io.Resources;
 
 import io.mangoo.enums.Default;
-import io.mangoo.enums.Jvm;
-import io.mangoo.enums.Key;
-import io.mangoo.enums.Mode;
 import io.mangoo.enums.Required;
 import io.mangoo.enums.RouteType;
 
@@ -28,7 +25,6 @@ import io.mangoo.enums.RouteType;
  */
 public final class BootstrapUtils {
     private static final Logger LOG = LogManager.getLogger(BootstrapUtils.class);
-    public static String loggerConfig; //NOSONAR
 
     private BootstrapUtils() {
     }
@@ -74,7 +70,7 @@ public final class BootstrapUtils {
         try (InputStream inputStream = Resources.getResource(Default.VERSION_PROPERTIES.toString()).openStream()) {
             final Properties properties = new Properties();
             properties.load(inputStream);
-            version = String.valueOf(properties.get(Key.VERSION.toString()));
+            version = String.valueOf(properties.get("version"));
         } catch (final IOException e) {
             LOG.error("Failed to get application version", e);
         }
@@ -129,30 +125,27 @@ public final class BootstrapUtils {
         
         return buffer.toString();
     }
-
-    public static String[] getMapping(String mapping) {
-        String [] mapped = new String[0];
-        if (StringUtils.isNotBlank(mapping)) {
-            mapped = mapping.split("\\.");
-        }
-        
-        return mapped;
-    }
     
-    public static Mode getMode() {
-        Mode mode = Mode.PROD;
-        final String applicationMode = System.getProperty(Jvm.APPLICATION_MODE.toString());
-        if (StringUtils.isNotBlank(applicationMode)) {
-            switch (applicationMode.toLowerCase(Locale.ENGLISH)) {
-                case "dev"  : mode = Mode.DEV;
-                break;
-                case "test" : mode = Mode.TEST;
-                break;
-                default     : mode = Mode.PROD;
+    /**
+     * Checks if a given method exists in a given class
+     * @param controllerMethod The method to check
+     * @param controllerClass The class to check 
+     * 
+     * @return True if the method exists, false otherweise
+     */
+    public static boolean methodExists(String controllerMethod, Class<?> controllerClass) {
+        boolean exists = false;
+        for (final Method method : controllerClass.getMethods()) {
+            if (method.getName().equals(controllerMethod)) {
+                exists = true;
                 break;
             }
         }
 
-        return mode;
+        if (!exists) {
+            LOG.error("Could not find controller method '" + controllerMethod + "' in controller class '" + controllerClass.getSimpleName() + "'");
+        }
+
+        return exists;
     }
 }

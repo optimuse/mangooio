@@ -71,7 +71,6 @@ public class InboundCookiesHandler implements HttpHandler {
 
         CookieParser cookieParser = CookieParser.build()
                 .withContent(getCookieValue(exchange, this.config.getSessionCookieName()))
-                .withSecret(this.config.getApplicationSecret())
                 .isEncrypted(this.config.isSessionCookieEncrypt());
 
         if (cookieParser.hasValidSessionCookie()) {
@@ -99,7 +98,6 @@ public class InboundCookiesHandler implements HttpHandler {
 
         final CookieParser cookieParser = CookieParser.build()
                 .withContent(getCookieValue(exchange, this.config.getAuthenticationCookieName()))
-                .withSecret(this.config.getApplicationSecret())
                 .isEncrypted(this.config.isAuthenticationCookieEncrypt());
         
         if (cookieParser.hasValidAuthenticationCookie()) {

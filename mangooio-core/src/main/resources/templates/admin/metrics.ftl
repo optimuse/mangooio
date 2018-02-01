@@ -1,14 +1,23 @@
 <#include "header.ftl">
+<#if enabled>
 <section class="content-header">
 	<h1>Metrics</h1>
 </section>
 <section class="content">
 <div class="row">
     <div class="col-lg-3 col-xs-6">
-    	<div class="small-box bg-green">
+    	<div class="small-box bg-aqua">
         	<div class="inner">
             	<h3>${totalRequests}</h3>
-            	<p>Total requests </p>
+            	<p>Total requests</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-xs-6">
+    	<div class="small-box bg-aqua">
+        	<div class="inner">
+            	<h3>${dataSend}</h3>
+            	<p>Data send</p>
             </div>
         </div>
     </div>
@@ -78,5 +87,15 @@
 	</div>
 </div>
 </#if>
+<div class="row">
+	<div class="col-xs-12">
+		<a href="/@admin/metrics/reset" class="btn btn-primary btn-block" onclick="return confirm('Are you sure you want to reset the metrics?')">Reset metrics</a>
+	</div>
+</div>
 </section>
+<#else>
+<section class="content-header">
+	<h1>Metrics are not enabled. Set <a href="https://docs.mangoo.io/administration.html">metrics to true in your application.yaml file</a> in order to collect metrics.</h1>
+</section>
+</#if>
 <#include "footer.ftl">
